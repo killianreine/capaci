@@ -67,7 +67,7 @@ class GamePersistenceService
 		$jeu->get_plateau()->fromJson($partie['partie_plateau'], $joueur1, $joueur2);
 
 		// Définir le joueur actif
-		if ((int)$partie['partie_joueurActif'] !== (int)$joueur1UserId) {
+		if ((int)$partie['partie_joueuractif'] !== (int)$joueur1UserId) {
 			$jeu->finTour();
 		}
 
@@ -222,7 +222,7 @@ class GamePersistenceService
 			'username2'      => $joueur2Name,
 			'date_creation'  => $dateCreation,
 			'date_fin'       => date('Y-m-d H:i:s'),
-			'gagnant'        => $gagnantUserId
+			'gagnant'        => $gagnantUserId === $joueur1UserId ? 1 : 2
 		]);
 
 		Database::insertFromSelect(

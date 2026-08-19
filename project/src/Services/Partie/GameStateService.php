@@ -44,16 +44,16 @@ class GameStateService
 
         // Déterminer le gagnant si la partie est terminée
         $gagnantId = null;
-        if ($partie['partie_etat'] === 'TERMINEE' && !empty($partie['partie_joueurGagnant'])) {
+        if ($partie['partie_etat'] === 'TERMINEE' && !empty($partie['partie_joueurgagnant'])) {
             $joueurGagnant = Database::select("joueur", ["users_id"], [
-                "joueur_id" => $partie['partie_joueurGagnant']
+            "joueur_id" => $partie['partie_joueurgagnant']
             ]);
             $gagnantId = !empty($joueurGagnant) ? (int)$joueurGagnant[0]['users_id'] : null;
         }
 
         return [
             'plateau' => $partie['partie_plateau'],
-            'joueurActifId' => (int)$partie['partie_joueurActif'],
+            'joueurActifId' => (int)($partie['partie_joueuractif'] ?? 0),
             'etat' => $partie['partie_etat'],
             'joueur1Name' => $joueur1Name,
             'joueur2Name' => $joueur2Name,

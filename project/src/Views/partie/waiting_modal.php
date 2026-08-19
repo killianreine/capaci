@@ -47,4 +47,32 @@ $isVisible   = $isPublic ?? false;
 
     </div>
 </div>
+<script>
+(() => {
+    const endpoint = <?= json_encode(BASE_URL . '/check-player-joined') ?>;
+    const destination = <?= json_encode(BASE_URL . '/creer-partie') ?>;
+    let checking = false;
+
+    const checkPlayer = async () => {
+        if (checking || document.hidden) return;
+        checking = true;
+        try {
+            const response = await fetch(endpoint, {
+                credentials: 'same-origin',
+                cache: 'no-store',
+                headers: { 'Accept': 'application/json' }
+            });
+            const state = await response.json();
+            if (state.joined) window.location.assign(destination);
+        } catch (error) {
+            console.warn('Verification du joueur impossible', error);
+        } finally {
+            checking = false;
+        }
+    };
+
+    checkPlayer();
+    window.setInterval(checkPlayer, 2000);
+})();
+</script>
 <?php endif; ?>

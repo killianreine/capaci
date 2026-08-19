@@ -76,7 +76,7 @@ class ProfileController
 
 
 		$this->service->update(
-			$_SESSION['user_id'],
+			$_SESSION['users_id'],
 			$email,
 			$username,
 			$hashedPassword

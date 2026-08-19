@@ -58,7 +58,7 @@
 				<img src="<?= BASE_URL ?>/assets/images/coupe.png" class="trophy">
 
 				<div class="victory-number">
-					<?= $users['users_nbVictoire'] ?>
+									<?= $users['users_nbvictoire'] ?>
 				</div>
 
 				<div class="victory-label">

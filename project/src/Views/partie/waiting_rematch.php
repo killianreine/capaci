@@ -1,4 +1,3 @@
-<meta http-equiv="refresh" content="2">
 <div class="modal show waiting-rematch-modal">
     <div class="modal-content">
         <div class="spinner"></div>
@@ -23,7 +22,7 @@
                 <?php endif; ?>
             </p>
             <p class="auto-refresh-info">
-                <small>Actualisation automatique toutes les 2 secondes</small>
+                <small>Verification automatique toutes les 2 secondes</small>
             </p>
         </div>
         <form method="POST" action="<?= BASE_URL ?>/annuler-rematch">
@@ -187,3 +186,35 @@
     animation: pulse 2s ease-in-out infinite;
 }
 </style>
+
+<script>
+(() => {
+    const endpoint = <?= json_encode(BASE_URL . '/check-rematch-status') ?>;
+    let checking = false;
+
+    const checkInvitation = async () => {
+        if (checking || document.hidden) return;
+        checking = true;
+        try {
+            const response = await fetch(endpoint, {
+                credentials: 'same-origin',
+                cache: 'no-store',
+                headers: { 'Accept': 'application/json' }
+            });
+            const state = await response.json();
+            if (state.status === 'ACCEPTER') {
+                window.location.assign(<?= json_encode(BASE_URL . '/creer-partie') ?>);
+            } else if (state.status === 'REFUSER' || state.status === 'TIMEOUT') {
+                window.location.assign(<?= json_encode(BASE_URL . '/home') ?>);
+            }
+        } catch (error) {
+            console.warn('Verification du rematch impossible', error);
+        } finally {
+            checking = false;
+        }
+    };
+
+    checkInvitation();
+    window.setInterval(checkInvitation, 2000);
+})();
+</script>

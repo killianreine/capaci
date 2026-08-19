@@ -48,7 +48,7 @@ class ReplayService
 	}
 	public function getAllTour(int $partieId): array
 	{
-		$replay = Database::select("archives_tourdejeu", ["*"], ["partie_id" => $partieId],"tdj_nTour");
+		$replay = Database::select("archives_tourdejeu", ["*"], ["partie_id" => $partieId], "AND", "tdj_ntour", "ASC");
 
 		$tours = [];
 
@@ -57,13 +57,13 @@ class ReplayService
 
 				$tours[] = new TourDeJeu(
 					(int)$tour["tdj_id"],
-					(int)$tour["tdj_nTour"],
-					(int)$tour["tdj_joueurActif"],
-					(int)$tour["xDepart"],
-					(int)$tour["yDepart"],
-					(int)$tour["xArrive"],
-					(int)$tour["yArrive"],
-					(bool)$tour["tdj_aManger"]
+					(int)$tour["tdj_ntour"],
+					(int)$tour["tdj_joueuractif"],
+					(int)$tour["xdepart"],
+					(int)$tour["ydepart"],
+					(int)$tour["xarrive"],
+					(int)$tour["yarrive"],
+					(bool)$tour["tdj_amanger"]
 				);
 			}
 		}

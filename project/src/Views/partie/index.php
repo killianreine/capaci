@@ -37,12 +37,37 @@ $isGameOver = isset($gameOver) && $gameOver !== null;
 $isPartieEnCours = isset($gameState) && $gameState['etat'] === 'EN COURS';
 ?>
 
-<?php if (!$waitingForPlayer && !$isGameOver && $isPartieEnCours && !$isMyTurn): ?>
-<meta http-equiv="refresh" content="3">
-<?php endif; ?>
+<?php if (!$waitingForPlayer && !$isGameOver && $isPartieEnCours): ?>
+<script>
+(() => {
+	const endpoint = <?= json_encode(BASE_URL . '/partie/get-state') ?>;
+	const destination = window.location.href;
+	const initialDate = <?= json_encode($gameState['dateModif'] ?? null) ?>;
+	let checking = false;
 
-<?php if ($waitingForPlayer && !$isGameOver): ?>
-<meta http-equiv="refresh" content="2">
+	const checkGameState = async () => {
+		if (checking || document.hidden) return;
+		checking = true;
+		try {
+			const response = await fetch(endpoint, {
+				credentials: 'same-origin',
+				cache: 'no-store',
+				headers: { 'Accept': 'application/json' }
+			});
+			const state = await response.json();
+			if (!state.error && state.dateModif !== initialDate) {
+				window.location.assign(destination);
+			}
+		} catch (error) {
+			console.warn('Verification de la partie impossible', error);
+		} finally {
+			checking = false;
+		}
+	};
+
+	window.setInterval(checkGameState, 2000);
+})();
+</script>
 <?php endif; ?>
 
 <?php if (!$waitingForPlayer && !$isGameOver): ?>

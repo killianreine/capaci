@@ -54,10 +54,11 @@ class GameCreationService
     public function joinGame(int $code, Joueur $joueur): ?Jeu
     {
         $waitingData = $this->codeService->findByCode($code);
-        $waitingPlayer = Database::select("users", ['*'], ['users_id' => $waitingData['user_id']]);
         if (!$waitingData) {
             return null;
         }
+
+        $waitingPlayer = Database::select("users", ['*'], ['users_id' => $waitingData['user_id']]);
 
         // On récupère la visibilité stockée dans codes_attente (défaut à true/1)
         $isPublic = isset($waitingData['is_public']) ? (bool)$waitingData['is_public'] : true;

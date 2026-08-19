@@ -29,6 +29,7 @@ CREATE TABLE partie (
     partie_joueurGagnant INTEGER,
     partie_tdj INTEGER,
     partie_public BOOLEAN DEFAULT TRUE,
+    UNIQUE (partie_code),
     FOREIGN KEY (partie_joueurGagnant) REFERENCES joueur(joueur_id) ON DELETE SET NULL
 );
 
@@ -41,7 +42,7 @@ CREATE TABLE archive_partie (
     username2 VARCHAR(100) NOT NULL,
     date_creation TIMESTAMP,
     date_fin TIMESTAMP,
-    gagnant BOOLEAN DEFAULT FALSE,
+    gagnant INTEGER NOT NULL DEFAULT 0 CHECK (gagnant IN (0, 1, 2)),
     public BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (partie_id) REFERENCES partie(partie_id) ON DELETE CASCADE,
     FOREIGN KEY (users_id) REFERENCES users(users_id) ON DELETE CASCADE,
