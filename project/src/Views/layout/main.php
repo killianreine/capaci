@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title><?= $title ?? 'Capaci' ?></title>
-    <link rel="stylesheet" href="/capaci/project/public/assets/css/base/layout.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/base/layout.css">
 
     <?php if (!empty($styles)): ?>
         <?php foreach ($styles as $style): ?>

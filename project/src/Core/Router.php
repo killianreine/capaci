@@ -12,12 +12,14 @@ class Router
 {
 	public function handleRequest(): void
 	{
-		$basePath = '/capaci/project/public';
+		$basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
 		$replayControleur = null;
 		
 		$uri = $_SERVER['REQUEST_URI'] ?? '/';
 		$uri = parse_url($uri, PHP_URL_PATH);
-		$uri = str_replace($basePath, '', $uri);
+		if ($basePath !== '' && str_starts_with($uri, $basePath)) {
+			$uri = substr($uri, strlen($basePath));
+		}
 		
 		if (empty($uri) || $uri === '/') {
 			$uri = '/';

@@ -7,7 +7,8 @@ use App\Config\Database;
 use App\Models\Classes\Joueur;
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-define('BASE_URL', '/capaci/project/public');
+$basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+define('BASE_URL', $basePath === '/' ? '' : $basePath);
 
 session_start();
 

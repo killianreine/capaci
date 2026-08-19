@@ -93,7 +93,7 @@ function genererCasePiece(Cases $case, bool $selected, array $casesAttaquable = 
 	$piece = $case->getPiece();
 	$type = strtolower($piece->getForme()->name);
 	$couleur = strtolower($piece->getJoueur()->getCouleur());
-	$cheminImage = "/capaci/project/public/assets/pieces/{$type}/{$couleur}/{$type}.svg";
+	$cheminImage = BASE_URL . "/assets/pieces/{$type}/{$couleur}/{$type}.svg";
 	
 	$class = $selected ? 'case selected' : 'case';
 	$peutSeDeplacer = $piece->getNbCaseDeplacement() > 0;

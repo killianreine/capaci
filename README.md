@@ -1,5 +1,18 @@
 #  Capaci
 
+## Lancement local
+
+Depuis le dossier `project`, installez les dépendances puis lancez le serveur :
+
+```powershell
+cd project
+php composer.phar install
+php -S 127.0.0.1:8000 -t public
+```
+
+La connexion PostgreSQL est lue dans `project/.env` depuis `DATABASE_URL`.
+Copiez `.env.example` si vous devez recréer ce fichier.
+
 ## Accès au jeu : https://notes-de-cours-kreine.fr/public/capaci
 
 ## Équipe de développement

@@ -54,10 +54,7 @@ class Database
 		'archives_tourdejeu'
 	];
 
-	private const HOST = 'localhost';
-	private const DB_NAME = 'capaci';
-	private const USERNAME = 'root';
-	private const PASSWORD = '';
+	private static bool $environmentLoaded = false;
 
 	/**
 	 * Retourne l'instance PDO (Singleton).
@@ -67,23 +64,72 @@ class Database
 	public static function getInstance(): PDO
 	{
 		if (self::$instance === null) {
+			self::loadEnvironment();
+
 			try {
+				$databaseUrl = getenv('DATABASE_URL');
+				if ($databaseUrl === false || $databaseUrl === '') {
+					throw new InvalidArgumentException('DATABASE_URL est manquante dans project/.env.');
+				}
+
+				$parts = parse_url($databaseUrl);
+				if ($parts === false || empty($parts['host']) || empty($parts['path'])) {
+					throw new InvalidArgumentException('DATABASE_URL est invalide.');
+				}
+
+				$dsn = 'pgsql:host=' . $parts['host'];
+				if (isset($parts['port'])) {
+					$dsn .= ';port=' . $parts['port'];
+				}
+				$dsn .= ';dbname=' . ltrim($parts['path'], '/');
+				parse_str($parts['query'] ?? '', $options);
+				foreach (['sslmode', 'channel_binding'] as $option) {
+					if (isset($options[$option])) {
+						$dsn .= ';' . $option . '=' . $options[$option];
+					}
+				}
+
 				self::$instance = new PDO(
-					"mysql:host=" . self::HOST . ";dbname=" . self::DB_NAME . ";charset=utf8mb4",
-					self::USERNAME,
-					self::PASSWORD,
+					$dsn,
+					rawurldecode($parts['user'] ?? ''),
+					rawurldecode($parts['pass'] ?? ''),
 					[
 						PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 						PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 						PDO::ATTR_EMULATE_PREPARES => false
 					]
 				);
-			} catch (PDOException $e) {
-				die("Erreur de connexion : " . $e->getMessage());
+			} catch (PDOException | InvalidArgumentException $e) {
+				die("Erreur de connexion à la base de données : " . $e->getMessage());
 			}
 		}
 
 		return self::$instance;
+	}
+
+	private static function loadEnvironment(): void
+	{
+		if (self::$environmentLoaded) {
+			return;
+		}
+
+		$envFile = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env';
+		if (is_file($envFile)) {
+			foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+				$line = trim($line);
+				if ($line === '' || str_starts_with($line, '#') || !str_contains($line, '=')) {
+					continue;
+				}
+
+				[$name, $value] = explode('=', $line, 2);
+				$name = trim($name);
+				$value = trim($value);
+				$value = trim($value, "\\\"'");
+				putenv($name . '=' . $value);
+			}
+		}
+
+		self::$environmentLoaded = true;
 	}
 
 	/**
