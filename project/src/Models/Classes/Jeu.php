@@ -245,8 +245,6 @@ final class Jeu
 		// 1. Vérifier que c'est bien le tour du joueur propriétaire de la pièce
 		$joueurActif = $this->getJoueurActif();
 
-		var_dump($joueurActif->getId());
-		//var_dump($this->getJoueurActif());
 		if ($piece->getJoueur() !== $joueurActif) {
 			return 'BAD_PLAYER';
 		}
@@ -283,8 +281,6 @@ final class Jeu
 		$piece->setColonne($colonneA);
 
 		
-		var_dump($this->tourDeJeu);
-
 		$this->partieService->savePlay(
 			$this->tourDeJeu,
 			$joueurActif,

@@ -38,36 +38,7 @@ $isPartieEnCours = isset($gameState) && $gameState['etat'] === 'EN COURS';
 ?>
 
 <?php if (!$waitingForPlayer && !$isGameOver && $isPartieEnCours): ?>
-<script>
-(() => {
-	const endpoint = <?= json_encode(BASE_URL . '/partie/get-state') ?>;
-	const destination = window.location.href;
-	const initialDate = <?= json_encode($gameState['dateModif'] ?? null) ?>;
-	let checking = false;
-
-	const checkGameState = async () => {
-		if (checking || document.hidden) return;
-		checking = true;
-		try {
-			const response = await fetch(endpoint, {
-				credentials: 'same-origin',
-				cache: 'no-store',
-				headers: { 'Accept': 'application/json' }
-			});
-			const state = await response.json();
-			if (!state.error && state.dateModif !== initialDate) {
-				window.location.assign(destination);
-			}
-		} catch (error) {
-			console.warn('Verification de la partie impossible', error);
-		} finally {
-			checking = false;
-		}
-	};
-
-	window.setInterval(checkGameState, 2000);
-})();
-</script>
+<div data-game-date="<?= htmlspecialchars((string)($gameState['dateModif'] ?? '')) ?>" hidden></div>
 <?php endif; ?>
 
 <?php if (!$waitingForPlayer && !$isGameOver): ?>
