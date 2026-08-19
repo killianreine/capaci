@@ -213,9 +213,22 @@ class Database
 				VALUES ({$placeholders})";
 
 		$stmt = $db->prepare($sql);
-		$ok = $stmt->execute($data);
+		$stmt->execute($data);
 
-		return (int) $db->lastInsertId();
+		// codes_attente utilise un code fourni par l'application, pas une séquence.
+		if ($table === 'codes_attente' && isset($data['code'])) {
+			return (int) $data['code'];
+		}
+
+		try {
+			return (int) $db->lastInsertId();
+		} catch (PDOException $e) {
+			if (str_contains($e->getMessage(), 'lastval is not yet defined')) {
+				return 0;
+			}
+
+			throw $e;
+		}
 	}
 
 	public static function insertFromSelect(
