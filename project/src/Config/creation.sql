@@ -118,3 +118,11 @@ CREATE INDEX idx_rematch_invited_user ON rematch_invitations(invited_user_id);
 CREATE INDEX idx_rematch_status ON rematch_invitations(status);
 CREATE INDEX idx_rematch_status_invited ON rematch_invitations(status, invited_user_id);
 CREATE INDEX idx_rematch_created_at ON rematch_invitations(created_at);
+
+CREATE TABLE app_sessions (
+    session_id VARCHAR(128) PRIMARY KEY,
+    session_data TEXT NOT NULL,
+    last_accessed BIGINT NOT NULL
+);
+
+CREATE INDEX idx_app_sessions_last_accessed ON app_sessions(last_accessed);
