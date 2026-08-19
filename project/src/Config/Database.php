@@ -83,7 +83,7 @@ class Database
 				}
 				$dsn .= ';dbname=' . ltrim($parts['path'], '/');
 				parse_str($parts['query'] ?? '', $options);
-				foreach (['sslmode', 'channel_binding'] as $option) {
+				foreach (['sslmode', 'channel_binding', 'options'] as $option) {
 					if (isset($options[$option])) {
 						$dsn .= ';' . $option . '=' . $options[$option];
 					}
